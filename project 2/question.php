@@ -2,7 +2,11 @@
 require_once __DIR__ . '/includes/auth.php';
 requireLogin();
 
-if (!isset($_SESSION['current_question'], $_SESSION['level'], $_SESSION['score'])) {
+if (
+    !isset($_SESSION['level'], $_SESSION['score']) ||
+    !isset($_SESSION['current_question']) ||
+    !is_array($_SESSION['current_question'])
+) {
     redirect('game.php');
 }
 
@@ -17,7 +21,7 @@ if (isset($_SESSION['reduced_choices']) && is_array($_SESSION['reduced_choices']
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['use_lifeline'])) {
-        $lifeline = (string)filter_input(INPUT_POST, 'use_lifeline', FILTER_SANITIZE_SPECIAL_CHARS);
+        $lifeline = (string) filter_input(INPUT_POST, 'use_lifeline', FILTER_SANITIZE_SPECIAL_CHARS);
 
         if (!isset($_SESSION['lifelines'][$lifeline])) {
             $error = 'Invalid lifeline.';
@@ -42,7 +46,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 $_SESSION['score'] = $moneyLadder[$_SESSION['level'] - 1];
-                $_SESSION['current_question'] = getQuestionForLevel($questionBank, $_SESSION['level']);
+
+                $nextQuestion = getQuestionForLevel($questionBank, $_SESSION['level']);
+
+                if ($nextQuestion === null) {
+                    $_SESSION['won_game'] = true;
+                    $_SESSION['game_over'] = true;
+                    redirect('result.php');
+                }
+
+                $_SESSION['current_question'] = $nextQuestion;
                 unset($_SESSION['reduced_choices']);
                 redirect('question.php');
             }
@@ -52,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['submit_answer'])) {
-        $selected = (string)filter_input(INPUT_POST, 'answer', FILTER_SANITIZE_SPECIAL_CHARS);
+        $selected = (string) filter_input(INPUT_POST, 'answer', FILTER_SANITIZE_SPECIAL_CHARS);
 
         if ($selected === '') {
             $error = 'Please select an answer before submitting.';
@@ -69,7 +82,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 $_SESSION['level']++;
-                $_SESSION['current_question'] = getQuestionForLevel($questionBank, $_SESSION['level']);
+                $nextQuestion = getQuestionForLevel($questionBank, $_SESSION['level']);
+
+                if ($nextQuestion === null) {
+                    $_SESSION['won_game'] = true;
+                    $_SESSION['game_over'] = true;
+                    redirect('result.php');
+                }
+
+                $_SESSION['current_question'] = $nextQuestion;
                 unset($_SESSION['reduced_choices']);
                 redirect('question.php');
             } else {
