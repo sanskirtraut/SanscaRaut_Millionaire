@@ -155,4 +155,3 @@ function getFiftyFiftyChoices(array $question): array
         $keepWrong => $question['choices'][$keepWrong]
     ];
 }
-?>
