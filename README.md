@@ -3,6 +3,8 @@
 This project is a web version of Who wants to be a Millionaire created by Sansca Raut and Tytus Clements.
 This showcase all the classic game features of Who wants to be a Millionaire like multi question progression, lifeline tracking, and walk away option- all in PHP sessions!
 
+
+Steps for running this project in a local server
 🔧 Step 1: Install XAMPP
   Go to: https://www.apachefriends.org
   Download XAMPP
