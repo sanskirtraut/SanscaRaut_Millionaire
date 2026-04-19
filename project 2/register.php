@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $success = 'Registration successful. You can now log in.';
                 $username = '';
             } else {
-                $error = 'Unable to save user. Please try again.';
+                $error = 'Unable to save user. Check that the data folder exists and is writable.';
             }
         }
     }

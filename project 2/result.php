@@ -17,7 +17,13 @@ $walkedAway = $_SESSION['walked_away'] ?? false;
 $wrongAnswer = $_SESSION['wrong_answer'] ?? '';
 $correctAnswer = $_SESSION['correct_answer'] ?? '';
 
-unset($_SESSION['game_over'], $_SESSION['won_game'], $_SESSION['walked_away'], $_SESSION['wrong_answer'], $_SESSION['correct_answer']);
+unset(
+    $_SESSION['game_over'],
+    $_SESSION['won_game'],
+    $_SESSION['walked_away'],
+    $_SESSION['wrong_answer'],
+    $_SESSION['correct_answer']
+);
 ?>
 <!DOCTYPE html>
 <html lang="en">
