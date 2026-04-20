@@ -1,3 +1,4 @@
+make sure this readme is good for my the github
 # 💰💵Who wants to be a Millionaire💵💰
 
 This project is a web version of Who wants to be a Millionaire created by Sansca Raut and Tytus Clements.
