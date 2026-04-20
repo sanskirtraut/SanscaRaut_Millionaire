@@ -27,7 +27,7 @@ function loadUsers(string $filePath): array
     $users = [];
 
     foreach ($lines as $line) {
-        $parts = explode('|', $line);
+        $parts = explode('|', $line, 2);
         if (count($parts) === 2) {
             $users[$parts[0]] = $parts[1];
         }
@@ -38,6 +38,24 @@ function loadUsers(string $filePath): array
 
 function saveUser(string $filePath, string $username, string $hashedPassword): bool
 {
+    $directory = dirname($filePath);
+
+    if (!is_dir($directory)) {
+        if (!mkdir($directory, 0777, true)) {
+            return false;
+        }
+    }
+
+    if (!file_exists($filePath)) {
+        if (file_put_contents($filePath, '') === false) {
+            return false;
+        }
+    }
+
+    if (!is_writable($filePath)) {
+        return false;
+    }
+
     $line = $username . '|' . $hashedPassword . PHP_EOL;
     return file_put_contents($filePath, $line, FILE_APPEND | LOCK_EX) !== false;
 }
@@ -109,20 +127,22 @@ function requireLogin(): void
     }
 }
 
+/* UPDATED: shared file-based leaderboard */
 function addScoreToLeaderboard(string $username, int $score): void
 {
-    ensureSessionArray('scores', []);
+    $leaderboardFile = __DIR__ . '/../data/leaderboard.txt';
+    $directory = dirname($leaderboardFile);
 
-    $_SESSION['scores'][] = [
-        'username' => $username,
-        'score' => $score
-    ];
+    if (!is_dir($directory)) {
+        mkdir($directory, 0777, true);
+    }
 
-    usort($_SESSION['scores'], function ($a, $b) {
-        return $b['score'] <=> $a['score'];
-    });
+    if (!file_exists($leaderboardFile)) {
+        file_put_contents($leaderboardFile, '');
+    }
 
-    $_SESSION['scores'] = array_slice($_SESSION['scores'], 0, 10);
+    $line = $username . '|' . $score . PHP_EOL;
+    file_put_contents($leaderboardFile, $line, FILE_APPEND | LOCK_EX);
 }
 
 function getSafeMoney(int $level, array $moneyLadder): int
