@@ -102,7 +102,6 @@ http://localhost/project2/
 
 Make sure your files use correct paths:
 
-```php
 require_once __DIR__ . '/includes/auth.php';
 CSS not working
 
@@ -123,9 +122,11 @@ Input validation using filter_input()
 Output escaping with htmlspecialchars()
 Password hashing using password_hash()
 Session-based authentication
+
  Team Members
 Sansca Raut – PHP Logic, CSS, Testing
 Tytus Clements – PHP Logic, HTML, Sessions, Forms
+
  Notes
 PHP handles all game logic
 No database used (flat file storage)
